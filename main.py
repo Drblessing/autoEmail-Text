@@ -9,14 +9,14 @@ from twilio.rest import Client
 #datetime_object = datetime.datetime.now() #Get current time
 today = datetime.date.today() #Get current day
 today = pd.Timestamp(today) #Convert current day into usable formate
-interviewees = pd.ExcelFile('/home/drblessing/InterviewCandidates.xlsx') #Load in list of interview candidates
+interviewees = pd.ExcelFile('[File path to the interview information]') #Load in list of interview candidates
 interviews_df = interviewees.parse() #Parse interview candidates into dataframe
 Reminders = (interviews_df['Date'] - datetime.timedelta(days=1)) #Take their interview day and subtract one to send out reminder
 Reminders_df = interviews_df[Reminders == today] #Checking which candidates have reminders today
 Reminder_phones = pd.Series.tolist(Reminders_df['Phone'])
 Reminder_emails = pd.Series.tolist(Reminders_df['Email'])
-account_sid = 'AC15e93d44086992b235236e9f9375beda'
-auth_token = '5b164501b0e8316dd5279d0a26a9f8a8'
+account_sid = '[Insert account_sid here]'
+auth_token = '[Insert auth_token here]'
 client = Client(account_sid, auth_token)
 for i in range(Reminders_df.shape[0]):
     Name, Day,Time, Address = (Reminders_df.iloc[i,0],Reminders_df.iloc[i,1],Reminders_df.iloc[i,2],Reminders_df.iloc[i,5])
@@ -36,16 +36,16 @@ Precision Headhunters Recruiters.
 
     message = client.messages.create(
                               body=Text,
-                              from_='+17345777060',
+                              from_='[Your twilio number here]',
                               to= '+1' + str(Reminders_df.iloc[0,4])
                           )
     print(message.sid)
 
     def send_simple_message():
         return requests.post(
-            "https://api.mailgun.net/v3/dbless.net/messages",
-            auth=("api", "5b01bc2d4f1665bb8f222c3af56842b9-52b6835e-e7b29459"),
-            data={"from": "Precision Headhunters Recruiters <mailgun@dbless.net>",
+            "[Your mailgun url]",
+            auth=("api", "[Your api key]"),
+            data={"from": "Precision Headhunters Recruiters <[Your mailgun email]",
                 "to": str(Reminders_df.iloc[i,3]),
                 "subject": "Friendly Interview Reminder",
                 "text": Text})
